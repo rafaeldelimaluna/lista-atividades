@@ -7,6 +7,7 @@ from typing import overload
 
 class Db:
     connection:Connection = None
+    __query_to_insert = "INSERT INTO ATIVIDADES (Nome,Duracao,Completo,Data,Periodo) VALUES (?,?,?,?,?)"
     def __init__(self):
         if isinstance(Db.connection,Connection):
             self.connection = Db.connection.cursor()
@@ -23,6 +24,8 @@ CREATE TABLE IF NOT EXISTS ATIVIDADES(
     PERIODO TEXT NOT NULL)
 """)
         self.connection.commit()
+
+
     def get(self,id:int) -> AtividadeItem|None:
         result = self.connection.execute("SELECT ROWID,* FROM ATIVIDADES WHERE ROWID = ?",[id]).fetchone()
         if result == None:
@@ -52,18 +55,28 @@ CREATE TABLE IF NOT EXISTS ATIVIDADES(
                     items.append(item)
         return items
     
-    def add(self,atividade_item:AtividadeItem):
-        self.connection.execute("INSERT INTO ATIVIDADES (Nome,Duracao,Completo,Data,Periodo) VALUES (?,?,?,?,?)",[atividade_item.nome,atividade_item.duracao_str,atividade_item.completo,atividade_item.data_str,atividade_item.periodo])
+    def add(self,atividade_item:AtividadeItem | list[AtividadeItem]):
+        if isinstance(atividade_item,AtividadeItem):
+            self.connection.execute(Db.__query_to_insert,[atividade_item.nome,atividade_item.duracao_str,atividade_item.completo,atividade_item.data_str,atividade_item.periodo])    
+            
+        if isinstance(atividade_item,list):
+            values = map(lambda atividade_item:[atividade_item.nome,atividade_item.duracao_str,atividade_item.completo,atividade_item.data_str,atividade_item.periodo],atividade_item)
+            print(values)
+            self.connection.executemany(Db.__query_to_insert,values)
         self.connection.commit()
+
     def update(self,atividade_item:AtividadeItem):
         if atividade_item.id == 0 or atividade_item.id == None:
             logging.warning(f"ATIVIDADE ITEM COM VALORES ESTRANHOS PARA UPDATE: {atividade_item.id=}")
             return
         self.connection.execute("UPDATE ATIVIDADES SET NOME=?,DURACAO=?,COMPLETO=?,Data=?,Periodo=? WHERE ROWID=?",[atividade_item.nome,atividade_item.duracao_str,atividade_item.completo,atividade_item.data_str,atividade_item.periodo,atividade_item.id])
         self.connection.commit()
+
         
     def deleteByItem(self,atividade_item:AtividadeItem):
-        self.deleteById(atividade_item.id)        
+        self.deleteById(atividade_item.id) 
+
+
     def deleteById(self,atividade_id:int):
         self.connection.execute("DELETE FROM ATIVIDADES WHERE ROWID=?",[atividade_id])
         self.connection.commit()

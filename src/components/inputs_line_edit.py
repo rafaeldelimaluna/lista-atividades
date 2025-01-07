@@ -21,23 +21,42 @@ class InputsLineEdit(QObject):
         self.PeriodoCbx.currentTextChanged.connect(self.emitTimeVarChanged)
         self.__cadastro_atual = AtividadeItem()
 
-    def __get_duracao_e_nome_from_atividadeNomeLineEdit(self)->AtividadeItem:
+    def __get_values_matches(self,tuple_values:tuple) -> AtividadeItem | None:
         item = AtividadeItem()
-        atividade = self.nomeAtividadeLineEdit.text()
-        
-        atividade_ferretto_match = pattern_atividade_ferretto.findall(atividade)
-        atividade_manual_match = pattern_atividade_manual.findall(atividade)
+        if tuple_values.__len__() == 2:
+            item.duracao = tuple_values[0]
+            item.nome = tuple_values[1]
+            return item
+        return
+    
 
+    def __get_duracao_e_nome_from_atividadeNomeLineEdit(self)->AtividadeItem|list[AtividadeItem] | None:
+        output:list[AtividadeItem] = list()
+
+        atividades_str = self.nomeAtividadeLineEdit.text()
+        
+        atividade_ferretto_match = pattern_atividade_ferretto.findall(atividades_str)
+        atividade_manual_match = pattern_atividade_manual.findall(atividades_str)
+
+        match_to_make_items:list
         if atividade_ferretto_match:
-            item.duracao = atividade_ferretto_match[0][0]
-            item.nome = atividade_ferretto_match[0][1]
-            return item
+            match_to_make_items = atividade_ferretto_match
         elif atividade_manual_match:
-            item.duracao = atividade_manual_match[0][0]
-            item.nome = atividade_manual_match[0][1]
-            return item
-        else:
-            return item
+            match_to_make_items = atividade_manual_match
+        else: # nenhum valor encontrado
+            return 
+        
+        for tuple_values in match_to_make_items:
+            item = self.__get_values_matches(tuple_values)
+            if item is not None:
+                output.append(item)
+        match(output.__len__()):
+            case 0:
+                return
+            case 1:
+                return output[0]
+            case _:
+                return output
     
     def emitTimeVarChanged(self):
         self.TimeVarChanged.emit(self.PeriodoCbx.currentText())
@@ -49,17 +68,18 @@ class InputsLineEdit(QObject):
     
     
     @property
-    def cadastro(self) -> AtividadeItem | None:
-        item = AtividadeItem()
-        nome_e_duracao = self.__get_duracao_e_nome_from_atividadeNomeLineEdit()
-        if nome_e_duracao.nome == None or nome_e_duracao.duracao == None:
-            return
-        item.duracao = nome_e_duracao.duracao_str
-        item.nome = nome_e_duracao.nome
-
-        item.data = self.data_in_dateEdit
-        item.periodo = self.PeriodoCbx.currentText()
-        return item
+    def cadastro(self) -> AtividadeItem | list[AtividadeItem] |None:
+        items = self.__get_duracao_e_nome_from_atividadeNomeLineEdit()
+        date_time_edit = self.data_in_dateEdit
+        periodo = self.PeriodoCbx.currentText()
+        if isinstance(items,list):
+            for item in items:
+                item.data = date_time_edit
+                item.periodo = periodo
+        if isinstance(items,AtividadeItem):
+            items.data = date_time_edit
+            items.periodo = periodo
+        return items
         
     
     @cadastro.setter
