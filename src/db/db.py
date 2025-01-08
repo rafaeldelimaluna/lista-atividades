@@ -14,15 +14,17 @@ class Db:
             return
         self.connection = connect("database.db")
         self.__create_table_atividades()
+
+
     def __create_table_atividades(self):
         self.connection.execute("""
-CREATE TABLE IF NOT EXISTS ATIVIDADES(
-    NOME TEXT NOT NULL,
-    DURACAO TEXT NOT NULL,
-    COMPLETO BOOL DEFAULT 0,
-    DATA TEXT NOT NULL,
-    PERIODO TEXT NOT NULL)
-""")
+        CREATE TABLE IF NOT EXISTS ATIVIDADES(
+            NOME TEXT NOT NULL,
+            DURACAO TEXT NOT NULL,
+            COMPLETO BOOL DEFAULT 0,
+            DATA TEXT NOT NULL,
+            PERIODO TEXT NOT NULL)
+        """)
         self.connection.commit()
 
 
@@ -66,7 +68,7 @@ CREATE TABLE IF NOT EXISTS ATIVIDADES(
         self.connection.commit()
 
     def update(self,atividade_item:AtividadeItem):
-        if atividade_item.id == 0 or atividade_item.id == None:
+        if atividade_item.id == 0 or atividade_item.id == None or atividade_item is None:
             logging.warning(f"ATIVIDADE ITEM COM VALORES ESTRANHOS PARA UPDATE: {atividade_item.id=}")
             return
         self.connection.execute("UPDATE ATIVIDADES SET NOME=?,DURACAO=?,COMPLETO=?,Data=?,Periodo=? WHERE ROWID=?",[atividade_item.nome,atividade_item.duracao_str,atividade_item.completo,atividade_item.data_str,atividade_item.periodo,atividade_item.id])

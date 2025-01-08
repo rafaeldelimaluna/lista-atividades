@@ -9,6 +9,9 @@ from src.components import *
 from src.db import Db
 from src.components.editar_item import EditarItem
 from src.resources import Icons
+from logging import DEBUG, basicConfig,WARNING
+
+basicConfig(level=WARNING,format="\033[;30m%(levelname)s\033[;32m:%(filename)s \033[m| %(funcName)s:%(lineno)d ->\033[;33m%(message)s\033[m")
 
 class Main(QMainWindow):
     def __init__(self):
@@ -32,6 +35,8 @@ class Main(QMainWindow):
         self.inputs.emitTimeVarChanged()
         
         self.tempo_trabalho_secao = datetime.today().min
+
+        
     def keyPressEvent(self, event:QKeyEvent):
         cadastro_atual = self.inputs.cadastro
         print(cadastro_atual)
@@ -46,6 +51,7 @@ class Main(QMainWindow):
             self.lista_atividades.update_list()
             self.inputs.cadastro = None
             self.inputs.emitTimeVarChanged()
+
         if event.key() in [Qt.Key.Key_Return,Qt.Key.Key_Enter] and cadastro_atual is not None and isinstance(cadastro_atual,list):
             items = self.inputs.cadastro
             self.db.add(items)
@@ -58,8 +64,12 @@ class Main(QMainWindow):
             self.lista_atividades.update_list()
             self.inputs.cadastro = None
             self.inputs.emitTimeVarChanged()
+
+
         if event.key() == Qt.Key.Key_Escape:
             self.close()
+
+
         if event.key() == Qt.Key.Key_Delete and self.lista_atividades.widget.hasFocus():
             self.lista_atividades.delete_current_item()
 

@@ -17,6 +17,7 @@ class ListaAtividades(QListWidget):
         self.icons = Icons()
         self.__periodo = Periodo.Todos
         self.__data = None
+        self.editar_item:EditarItem
         self.widget:QListWidget = mainWindow.findChild(QListWidget,"ListaListWidget")
         self.db = db
 
@@ -43,6 +44,8 @@ class ListaAtividades(QListWidget):
         current_widget_item = self.widget.currentItem()
         current_item = current_widget_item.data(Qt.ItemDataRole.UserRole)
         return current_item
+    
+    
     def setData(self,value:datetime):
         self.__data = value
         self.update_list()
@@ -103,9 +106,11 @@ class ListaAtividades(QListWidget):
         action_editar_item = menu.addAction("Editar Atividade")
 
         action = menu.exec(self.widget.mapToGlobal(position))
-
+        print('show context menu')
         if action == action_editar_item:
-            editar_item = EditarItem(self.currentAtividade)
+            print('editando')
+            self.editar_item = EditarItem(self.currentAtividade)
+            self.editar_item.show()
 
     def __start(self):
         self.update_list()
