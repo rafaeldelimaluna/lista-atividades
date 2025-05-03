@@ -8,7 +8,7 @@ from src.db import Db
 class EditarItem(QMainWindow):
     def __init__(self,atividade_item:AtividadeItem):
         super().__init__()
-        uic.loadUi("src/ui/editar_item.ui",self)
+        uic.loadUi("./src/ui/editar_item.ui",self)
         
         self.db = Db()
         self.atividade_item = atividade_item

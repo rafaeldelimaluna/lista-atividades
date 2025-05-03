@@ -16,7 +16,7 @@ basicConfig(level=WARNING,format="\033[;30m%(levelname)s\033[;32m:%(filename)s \
 class Main(QMainWindow):
     def __init__(self):
         super().__init__()
-        uic.loadUi("src/ui/gui.ui",self)
+        uic.loadUi("./_internal/src/ui/gui.ui",self)
         self.setWindowIcon(Icons().appIcon)
         self.setWindowIconText("Lista de Atividades")
         self.setWindowTitle("Lista de Atividades")
