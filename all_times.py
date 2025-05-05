@@ -39,6 +39,7 @@ class AtividadesPeriodo:
 
 
 # atividades = AtividadesPeriodo()
-# db = Db()
-MyGoogleEngine().sync_database()
-
+db = Db()
+obj = db.get_all()[-1]
+data = obj.data
+# MyGoogleEngine().sync_database()

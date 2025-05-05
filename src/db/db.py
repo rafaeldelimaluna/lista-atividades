@@ -39,6 +39,23 @@ class Db:
         item.set_values_by_array(result)
         return item
     
+
+    def get_all_white_google_id(self)->list[AtividadeItem]:
+        """Retorna todos os objetos que estão com o atributo google_id nulo. \n
+        ## OBS:
+        Somente serão retornados objetos depois do rowid 420, pois a implementação do google tasks é no dia 5 e este valor corresponde com o dia
+         """
+        query = f"SELECT ROWID,* FROM ATIVIDADES WHERE GOOGLE_ID IS NULL AND ROWID>420"
+        result = self.connection.execute(query).fetchall()
+        items:list[AtividadeItem] = list()
+        for item in result:
+            obj = AtividadeItem()
+            obj.set_values_by_array(item)
+            items.append(obj)
+        return items
+
+        
+
     def get_by_google_id(self,googleId:str) ->AtividadeItem|None:
         result = self.connection.execute("SELECT ROWID,* FROM ATIVIDADES WHERE GOOGLE_ID = ?",[googleId]).fetchone()
         if result == None:
@@ -73,7 +90,10 @@ class Db:
             self.connection.execute(Db.__query_to_insert,[atividade_item.nome,atividade_item.duracao_str,atividade_item.completo,atividade_item.data_str,atividade_item.periodo,atividade_item.materia,atividade_item.google_id,atividade_item.google_etag])    
             
         if isinstance(atividade_item,list):
-            values = map(lambda atividade_item:[atividade_item.nome,atividade_item.duracao_str,atividade_item.completo,atividade_item.data_str,atividade_item.periodo,atividade_item.materia,atividade_item.google_id,atividade_item.google_etag],atividade_item)
+            values = []
+            for item in atividade_item:
+                values.append([item.nome,item.duracao_str,item.completo,item.data_str,item.periodo,item.materia,item.google_id,item.google_etag])
+                self.__google_engine.add(item)
             print(values)
             self.connection.executemany(Db.__query_to_insert,values)
         self.connection.commit()

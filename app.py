@@ -10,6 +10,7 @@ from src.db import Db
 from src.components.editar_item import EditarItem
 from src.resources import Icons
 from logging import DEBUG, basicConfig,WARNING
+from src.google_module import MyGoogleEngine
 
 basicConfig(level=DEBUG,format="\033[;30m%(levelname)s\033[;32m:%(filename)s \033[m| %(funcName)s:%(lineno)d ->\033[;33m%(message)s\033[m")
 
@@ -23,6 +24,8 @@ class Main(QMainWindow):
 
 
         self.db = Db()
+        self.google_engine = MyGoogleEngine(self.db)
+        self.google_engine.sync_database()
 
         self.inputs = InputsLineEdit(self)
         self.lista_atividades = ListaAtividades(self,self.db)
@@ -65,8 +68,17 @@ class Main(QMainWindow):
 
         if event.key() == Qt.Key.Key_Delete and self.lista_atividades.widget.hasFocus():
             self.lista_atividades.delete_current_item()
+    def push_atividades_white_google_id_to_google_tasks(self):
+        atividade_items = self.db.get_all_white_google_id()
+        for item in atividade_items:
+            task = self.google_engine.add(item)
+            item.google_id = task["id"]
+            item.google_etag = task["etag"]
+            self.db.update(item)
 
     def closeEvent(self,event):
+        self.push_atividades_white_google_id_to_google_tasks()
+        self.google_engine.sync_database()
         self.db.update_last_entry()
 
 if __name__ == "__main__":

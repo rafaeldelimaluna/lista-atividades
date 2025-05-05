@@ -37,7 +37,7 @@ class AtividadeItem:
         self.__duracao:datetime = None
         self.completo:bool = False
         self.periodo:str
-        self.__data:date = None
+        self.__data:datetime = None
         self.tipo_atividade = None
         self.__materia = None
         self.__google_id:str = None
@@ -76,6 +76,8 @@ class AtividadeItem:
     @property
     def data(self):
         return self.__data
+    
+    
     @property
     def data_str(self):
         return self.__data.strftime("%d/%m/%Y")
@@ -86,7 +88,7 @@ class AtividadeItem:
             self.__data = value
             return
         if value.__len__()>10: # quer dizer que está no formato do google tasks no atributo due
-            self.__data = datetime.fromisoformat(value)
+            self.__data = datetime.fromisoformat(value).date()
             return
         self.__data = datetime.strptime(value,"%d/%m/%Y").date()
 

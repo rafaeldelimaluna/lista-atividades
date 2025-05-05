@@ -19,7 +19,7 @@ class MyGoogleEngine:
     LISTA_DE_ATIVIDADES_TASKLIST_ID = "N2JrUXpKRS1JQV9kU0tOSw"
     TASKLIST_CONLUIDAS_ID = "ajNpWjRMVHhrd0s1TGFiVQ"
 
-    def __init__(self):
+    def __init__(self,connection:Db):
         CLIENT_FILE = "private.json"
         SCOPES = ['https://www.googleapis.com/auth/tasks']
         creds = None
@@ -38,7 +38,16 @@ class MyGoogleEngine:
                 token.write(creds.to_json())
 
         self.service = build('tasks', 'v1', credentials=creds)
-        self.db = Db()
+        self.connection = connection
+
+    def add(self,atividade_obj:AtividadeItem)->dict:
+        task = {
+            "title": f"{atividade_obj.duracao_str} {atividade_obj.materia} {atividade_obj.nome}",
+            "notes": f"Período:{atividade_obj.periodo}",
+            "due": f"{atividade_obj.data.isoformat()}T00:00:00Z"
+        }
+        output = self.service.tasks().insert(tasklist=MyGoogleEngine.LISTA_DE_ATIVIDADES_TASKLIST_ID,body=task).execute()
+        return output
 
     def __inserir_dados_de_title(self,obj:AtividadeItem,title:str)->None:
         """Ele insere os dados por referência, por isso não existe retorno"""
@@ -83,10 +92,11 @@ class MyGoogleEngine:
         self.__inserir_dados_de_title(atividade_obj,task["title"])
 
         return atividade_obj
+    
     def __update_atividade_modificada(self,task:dict,db_obj:AtividadeItem):
         google_obj = self.__make_atividade_by_task(task)
         google_obj.id = db_obj.id
-        self.db.update(google_obj)
+        self.connection.update(google_obj)
 
     def __atividade_is_modified(self,db_obj:AtividadeItem,task):
         return isinstance(db_obj,AtividadeItem) and db_obj.google_etag != task["etag"]
@@ -95,16 +105,17 @@ class MyGoogleEngine:
         self.service.tasks().move(tasklist=MyGoogleEngine.LISTA_DE_ATIVIDADES_TASKLIST_ID,task=taskId,destinationTasklist=MyGoogleEngine.TASKLIST_CONLUIDAS_ID).execute()
 
     def sync_database(self):
+        """Faz a ação de adicionar e dar update das tasks para o banco de dados"""
         all_tasks:dict[dict] = self.service.tasks().list(tasklist=MyGoogleEngine.LISTA_DE_ATIVIDADES_TASKLIST_ID,showHidden=True).execute()["items"]
         for task in all_tasks:
-            db_obj = self.db.get_by_google_id(task["id"])
+            db_obj = self.connection.get_by_google_id(task["id"])
 
             if self.__atividade_is_modified(db_obj,task):
                 self.__update_atividade_modificada(task,db_obj)
 
             if db_obj == None:
                 atividade_obj = self.__make_atividade_by_task(task)
-                self.db.add(atividade_obj)
+                self.connection.add(atividade_obj)
             
             if task["status"] == "completed":
                 self.__pass_task_to_tasklist_completeds(task["id"])
