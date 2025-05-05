@@ -5,11 +5,32 @@ from re import compile as cmp
 from src.models.tipos_atividade import TiposAtividade
 from src.models.periodos import Periodo
 from unidecode import unidecode
+from src.models.materias import Materias
 pattern_HMS = cmp(r"(\d\d):(\d\d):(\d\d)")
 pattern_MS = cmp(r"(\d\d):(\d\d)")
 
 
 class AtividadeItem:
+    """
+    Esta classe está destinada para guardar informações de uma atividade qualquer.
+    # atributos
+    - id
+    - periodo
+    - data
+    - materia: Leia a [[Observação]] abaixo
+    - google_id
+    - google_etag
+
+    # propriedades
+    - nome: É uma propriedade, pois quando recebe um valor, ela define também "tipo_atividade"
+    - duração: É uma propriedade, pois pode receber valores string, com formato "H:M:S" ou datetime
+    - tipo_atividade: Propriedade definida pelo **nome**, toda vez que instanciada
+
+    # Observação
+    Como a verificação de matéria para objeto é custosa, ela somente é verificada ao ser atualizada no banco de dados
+    ou quando é inserida, pelo AtividadeInputLineEdit
+    """
+    
     def __init__(self):
         self.id:int = 0
         self.__nome:str = None
@@ -18,6 +39,9 @@ class AtividadeItem:
         self.periodo:str
         self.__data:date = None
         self.tipo_atividade = None
+        self.__materia = None
+        self.__google_id:str = None
+        self.__google_etag:str =  None
 
     def set_values_by_array(self,values_array):
         self.id = values_array[0]
@@ -26,10 +50,15 @@ class AtividadeItem:
         self.completo = values_array[3]
         self.data = values_array[4]
         self.periodo = values_array[5]
+        self.materia = values_array[6]
+        self.__google_id = values_array[7]
+        self.__google_etag = values_array[8]
+
 
     @property
     def nome(self):
         return self.__nome
+    
     @nome.setter
     def nome(self,value:str):
         if not isinstance(value,str):
@@ -52,9 +81,12 @@ class AtividadeItem:
         return self.__data.strftime("%d/%m/%Y")
     
     @data.setter
-    def data(self,value):
+    def data(self,value:str):
         if isinstance(value,date):
             self.__data = value
+            return
+        if value.__len__()>10: # quer dizer que está no formato do google tasks no atributo due
+            self.__data = datetime.fromisoformat(value)
             return
         self.__data = datetime.strptime(value,"%d/%m/%Y").date()
 
@@ -82,7 +114,46 @@ class AtividadeItem:
         if MS.__len__() != 0:
             date_str = f"00:{MS[0][0]}:{MS[0][1]}"
             self.__duracao = datetime.strptime(date_str,"%H:%M:%S")
+
+            
     @property
     def duracao_time_timedelta(self)->timedelta:
         """Retorna somente o H:M:S ao timedelta"""
         return timedelta(hours=self.duracao.hour,minutes=self.duracao.minute,seconds=self.duracao.second)
+    
+    @property
+    def materia(self):
+        return self.__materia
+    
+    @materia.setter
+    def materia(self,value:str):
+        if not isinstance(value,str):
+            self.__materia = Materias.Geral
+            return
+        
+        self.__materia = Materias.searchMateria(value)
+
+    @property
+    def google_id(self):
+        return self.__google_id
+    
+    @google_id.setter
+    def google_id(self,value):
+        if not isinstance(self.__google_id,str):
+            self.__google_id = value
+            return
+        raise AttributeError("Google Id não pode alterado")
+
+
+
+    @property
+    def google_etag(self):
+        return self.__google_etag
+    
+    @google_etag.setter
+    def google_etag(self,value):
+        self.__google_etag = value
+
+
+
+        

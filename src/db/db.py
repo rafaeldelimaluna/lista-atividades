@@ -7,7 +7,7 @@ from typing import overload
 
 class Db:
     connection:Connection = None
-    __query_to_insert = "INSERT INTO ATIVIDADES (Nome,Duracao,Completo,Data,Periodo) VALUES (?,?,?,?,?)"
+    __query_to_insert = "INSERT INTO ATIVIDADES (Nome,Duracao,Completo,Data,Periodo,Materia,GOOGLE_ID,GOOGLE_ETAG) VALUES (?,?,?,?,?,?,?,?)"
     def __init__(self):
         if isinstance(Db.connection,Connection):
             self.connection = Db.connection.cursor()
@@ -23,13 +23,24 @@ class Db:
             DURACAO TEXT NOT NULL,
             COMPLETO BOOL DEFAULT 0,
             DATA TEXT NOT NULL,
-            PERIODO TEXT NOT NULL)
-        """)
+            PERIODO TEXT NOT NULL,
+            MATERIA TEXT NOT NULL,
+            GOOGLE_ID TEXT UNIQUE,
+            GOOGLE_ETAG TEXT);""")
+        self.connection.execute("CREATE TABLE IF NOT EXISTS ENTRADAS_NO_APP (DATA TEXT NOT NULL);")
         self.connection.commit()
 
 
     def get(self,id:int) -> AtividadeItem|None:
         result = self.connection.execute("SELECT ROWID,* FROM ATIVIDADES WHERE ROWID = ?",[id]).fetchone()
+        if result == None:
+            return
+        item = AtividadeItem()
+        item.set_values_by_array(result)
+        return item
+    
+    def get_by_google_id(self,googleId:str) ->AtividadeItem|None:
+        result = self.connection.execute("SELECT ROWID,* FROM ATIVIDADES WHERE GOOGLE_ID = ?",[googleId]).fetchone()
         if result == None:
             return
         item = AtividadeItem()
@@ -59,19 +70,21 @@ class Db:
     
     def add(self,atividade_item:AtividadeItem | list[AtividadeItem]):
         if isinstance(atividade_item,AtividadeItem):
-            self.connection.execute(Db.__query_to_insert,[atividade_item.nome,atividade_item.duracao_str,atividade_item.completo,atividade_item.data_str,atividade_item.periodo])    
+            self.connection.execute(Db.__query_to_insert,[atividade_item.nome,atividade_item.duracao_str,atividade_item.completo,atividade_item.data_str,atividade_item.periodo,atividade_item.materia,atividade_item.google_id,atividade_item.google_etag])    
             
         if isinstance(atividade_item,list):
-            values = map(lambda atividade_item:[atividade_item.nome,atividade_item.duracao_str,atividade_item.completo,atividade_item.data_str,atividade_item.periodo],atividade_item)
+            values = map(lambda atividade_item:[atividade_item.nome,atividade_item.duracao_str,atividade_item.completo,atividade_item.data_str,atividade_item.periodo,atividade_item.materia,atividade_item.google_id,atividade_item.google_etag],atividade_item)
             print(values)
             self.connection.executemany(Db.__query_to_insert,values)
         self.connection.commit()
 
+
     def update(self,atividade_item:AtividadeItem):
+        """No método update, é verificado a mateŕia desta atividade, tendo em vista que é custosa essa verificação"""
         if atividade_item.id == 0 or atividade_item.id == None or atividade_item is None:
-            logging.warning(f"ATIVIDADE ITEM COM VALORES ESTRANHOS PARA UPDATE: {atividade_item.id=}")
+            logging.warning(f"ATIVIDADE ITEM COM VALORES ANORMAIS PARA UPDATE: {atividade_item.id=}")
             return
-        self.connection.execute("UPDATE ATIVIDADES SET NOME=?,DURACAO=?,COMPLETO=?,Data=?,Periodo=? WHERE ROWID=?",[atividade_item.nome,atividade_item.duracao_str,atividade_item.completo,atividade_item.data_str,atividade_item.periodo,atividade_item.id])
+        self.connection.execute("UPDATE ATIVIDADES SET NOME=?,DURACAO=?,COMPLETO=?,Data=?,Periodo=?,MATERIA=?,GOOGLE_ID=?,GOOGLE_ETAG=? WHERE ROWID=?",[atividade_item.nome,atividade_item.duracao_str,atividade_item.completo,atividade_item.data_str,atividade_item.periodo,atividade_item.materia,atividade_item.google_id,atividade_item.google_etag,atividade_item.id])
         self.connection.commit()
 
         
@@ -82,3 +95,19 @@ class Db:
     def deleteById(self,atividade_id:int):
         self.connection.execute("DELETE FROM ATIVIDADES WHERE ROWID=?",[atividade_id])
         self.connection.commit()
+    
+    def update_last_entry(self):
+        """Salva a ultima vez em que o programa. Salva esse dado no banco de dados"""
+        white_obj = AtividadeItem()
+        white_obj.data = datetime.now().date()
+        self.connection.execute("INSERT INTO ENTRADAS_NO_APP(DATA) VALUES(?)",[white_obj.data_str])
+        self.connection.commit()
+        
+    def get_last_entry(self):
+        """Retorna a última vez em que o programa foi fechado.
+        Tipo: Date"""
+        white_obj = AtividadeItem()
+        data_str= self.connection.execute("SELECT DATA FROM ENTRADAS_NO_APP ORDER BY ROWID DESC LIMIT 1").fetchone() 
+        white_obj.data = data_str[0]
+        return white_obj.data
+        

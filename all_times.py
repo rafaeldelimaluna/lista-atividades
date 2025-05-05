@@ -2,7 +2,7 @@ from datetime import datetime
 from src.db import Db
 from src.models import Periodo,AtividadeItem
 from src.models.tipos_atividade import TiposAtividade
-
+from src.google_module import MyGoogleEngine
 
 context = Db()
 
@@ -38,8 +38,7 @@ class AtividadesPeriodo:
 
 
 
-atividades = AtividadesPeriodo()
-
-print(atividades.todos.tempo_estudo.strftime("%d dias %H horas %M minutos %S segundos"))
-
+# atividades = AtividadesPeriodo()
+# db = Db()
+MyGoogleEngine().sync_database()
 

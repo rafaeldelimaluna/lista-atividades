@@ -11,7 +11,7 @@ from src.components.editar_item import EditarItem
 from src.resources import Icons
 from logging import DEBUG, basicConfig,WARNING
 
-basicConfig(level=WARNING,format="\033[;30m%(levelname)s\033[;32m:%(filename)s \033[m| %(funcName)s:%(lineno)d ->\033[;33m%(message)s\033[m")
+basicConfig(level=DEBUG,format="\033[;30m%(levelname)s\033[;32m:%(filename)s \033[m| %(funcName)s:%(lineno)d ->\033[;33m%(message)s\033[m")
 
 class Main(QMainWindow):
     def __init__(self):
@@ -36,35 +36,28 @@ class Main(QMainWindow):
         
         self.tempo_trabalho_secao = datetime.today().min
 
-        
+    def tentar_cadastrar(self,cadastro_atual:AtividadeItem|list[AtividadeItem]|None):
+        items = self.inputs.cadastro
+        self.db.add(items)
+        if items.tipo_atividade == TiposAtividade.Descanso:
+            self.tempo_trabalho_secao = datetime.today().min
+        else:
+            self.tempo_trabalho_secao+= items.duracao_time_timedelta
+        self.status_bar.showMessage(f"Tempo Trabalho: {self.tempo_trabalho_secao:%H:%M:%S}")
+        self.lista_atividades.update_list()
+        self.inputs.cadastro = None
+        self.inputs.emitTimeVarChanged()
+
     def keyPressEvent(self, event:QKeyEvent):
         cadastro_atual = self.inputs.cadastro
-        print(cadastro_atual)
+        print("Cadastro Atual:",cadastro_atual)
         if event.key() in [Qt.Key.Key_Return,Qt.Key.Key_Enter] and cadastro_atual is not None and isinstance(cadastro_atual,AtividadeItem):
-            items = self.inputs.cadastro
-            self.db.add(items)
-            if items.tipo_atividade == TiposAtividade.Descanso:
-                self.tempo_trabalho_secao = datetime.today().min
-            else:
-                self.tempo_trabalho_secao+= items.duracao_time_timedelta
-            self.status_bar.showMessage(f"Tempo Trabalho: {self.tempo_trabalho_secao:%H:%M:%S}")
-            self.lista_atividades.update_list()
-            self.inputs.cadastro = None
-            self.inputs.emitTimeVarChanged()
+            self.tentar_cadastrar(cadastro_atual)
 
         if event.key() in [Qt.Key.Key_Return,Qt.Key.Key_Enter] and cadastro_atual is not None and isinstance(cadastro_atual,list):
             items = self.inputs.cadastro
-            self.db.add(items)
             for item in items:
-                if item.tipo_atividade == TiposAtividade.Descanso:
-                    self.tempo_trabalho_secao = datetime.today().min
-                else:
-                    self.tempo_trabalho_secao+= item.duracao_time_timedelta
-            self.status_bar.showMessage(f"Tempo Trabalho: {self.tempo_trabalho_secao:%H:%M:%S}")
-            self.lista_atividades.update_list()
-            self.inputs.cadastro = None
-            self.inputs.emitTimeVarChanged()
-
+                self.tentar_cadastrar(item)
 
         if event.key() == Qt.Key.Key_Escape:
             self.close()
@@ -72,6 +65,9 @@ class Main(QMainWindow):
 
         if event.key() == Qt.Key.Key_Delete and self.lista_atividades.widget.hasFocus():
             self.lista_atividades.delete_current_item()
+
+    def closeEvent(self,event):
+        self.db.update_last_entry()
 
 if __name__ == "__main__":
     app = QApplication([])

@@ -4,9 +4,10 @@ from PyQt6.QtCore import QDate,pyqtSignal,QObject
 from ..models import AtividadeItem
 from ..models.atividade import pattern_HMS,pattern_MS
 from re import compile as cmp,DOTALL
+from logging import debug
 
 pattern_atividade_ferretto = cmp(r"(\d\d:\d\d)\sRelevância Enem\s\w+\s([^\n]+)",DOTALL)
-pattern_atividade_manual = cmp(r"(\d\d:\d\d) ([^\n]+)")
+pattern_atividade_manual = cmp(r"(\d\d:\d\d) (\w+) ([^\n]+)")
 
 class InputsLineEdit(QObject):
     TimeVarChanged = pyqtSignal(str)
@@ -23,9 +24,10 @@ class InputsLineEdit(QObject):
 
     def __get_values_matches(self,tuple_values:tuple) -> AtividadeItem | None:
         item = AtividadeItem()
-        if tuple_values.__len__() == 2:
+        if tuple_values.__len__() == 3:
             item.duracao = tuple_values[0]
-            item.nome = tuple_values[1]
+            item.materia = tuple_values[1]
+            item.nome = tuple_values[2]
             return item
         return
     
@@ -44,6 +46,7 @@ class InputsLineEdit(QObject):
         elif atividade_manual_match:
             match_to_make_items = atividade_manual_match
         else: # nenhum valor encontrado
+            debug("Nenhum valor encontrado em AtividadeNomeLineEdit")
             return 
         
         for tuple_values in match_to_make_items:
