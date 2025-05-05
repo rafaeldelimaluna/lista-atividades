@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="DzA9UCq-kPdZy2DB_YPa" name="Página-1">
-        <mxGraphModel dx="2074" dy="1262" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="1834" dy="1262" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -19,7 +19,7 @@
                 <mxCell id="11" value="google tasks to Bd" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="100" y="-250" width="120" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="54" style="edgeStyle=none;html=1;exitX=1;exitY=0.3333333333333333;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="12" target="53">
+                <mxCell id="54" style="edgeStyle=none;html=1;exitX=1;exitY=0.3333333333333333;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="12" target="53" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="12" value="db" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
@@ -34,114 +34,218 @@
                 <mxCell id="21" value="&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;google tasks to Bd&lt;/span&gt;" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="590" y="-350" width="120" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="31" value="" style="edgeStyle=none;html=1;" parent="1" source="26" target="30" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
+                <mxCell id="31" value="" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="119" target="132" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="665" y="663" as="sourcePoint"/>
+                        <mxPoint x="650" y="520" as="targetPoint"/>
+                    </mxGeometry>
                 </mxCell>
                 <mxCell id="32" value="não" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="31" vertex="1" connectable="0">
                     <mxGeometry x="-0.1429" y="2" relative="1" as="geometry">
                         <mxPoint as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="35" value="" style="edgeStyle=none;html=1;" parent="1" source="26" target="34" edge="1">
+                <mxCell id="92" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="42" target="91">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="36" value="sim" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="35" vertex="1" connectable="0">
-                    <mxGeometry x="0.322" relative="1" as="geometry">
-                        <mxPoint x="1" as="offset"/>
-                    </mxGeometry>
+                <mxCell id="42" value="Coletar todas as tasks existentes" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="590" y="-250" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="26" value="google_id existe no banco de dados?" style="rhombus;whiteSpace=wrap;html=1;align=left;" parent="1" vertex="1">
-                    <mxGeometry x="542.5" y="-101" width="215" height="124" as="geometry"/>
-                </mxCell>
-                <mxCell id="51" value="" style="edgeStyle=none;html=1;" parent="1" source="30" target="41" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="30" value="Inserir objeto novo" style="whiteSpace=wrap;html=1;align=left;" parent="1" vertex="1">
-                    <mxGeometry x="590" y="135" width="120" height="60" as="geometry"/>
-                </mxCell>
-                <mxCell id="38" value="" style="edgeStyle=none;html=1;" parent="1" source="34" target="37" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="45" value="sim" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="38" vertex="1" connectable="0">
-                    <mxGeometry x="0.14" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="58" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="34" target="57">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="59" value="Não" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="58">
-                    <mxGeometry x="-0.0248" y="-2" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="34" value="google_etag deste objeto é a mesma do banco de dados?" style="rhombus;whiteSpace=wrap;html=1;align=left;" parent="1" vertex="1">
-                    <mxGeometry x="850" y="-110" width="160" height="142" as="geometry"/>
-                </mxCell>
-                <mxCell id="37" value="colete o objeto pelo banco de dados." style="whiteSpace=wrap;html=1;align=left;fontStyle=1" parent="1" vertex="1">
-                    <mxGeometry x="1110" y="-69" width="120" height="60" as="geometry"/>
-                </mxCell>
-                <mxCell id="52" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="41" target="47" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="41" value="&lt;h1&gt;&lt;b&gt;Inserir os dados:&lt;/b&gt;&lt;/h1&gt;&lt;div&gt;google_id&lt;b&gt;[id]&lt;/b&gt;: google_id&lt;/div&gt;&lt;div&gt;google_etag&lt;b&gt;[etag]&lt;/b&gt;: etag&lt;/div&gt;&lt;div&gt;&lt;b&gt;[title]&lt;/b&gt;: nome&lt;/div&gt;&lt;div&gt;google data de conclusão[&lt;b&gt;due&lt;/b&gt;] (se tiver) formato&amp;nbsp;&lt;span style=&quot;background-color: rgba(255, 255, 255, 0.95); color: rgb(32, 33, 36); font-family: Roboto, &amp;quot;Noto Sans&amp;quot;, &amp;quot;Noto Sans JP&amp;quot;, &amp;quot;Noto Sans KR&amp;quot;, &amp;quot;Noto Naskh Arabic&amp;quot;, &amp;quot;Noto Sans Thai&amp;quot;, &amp;quot;Noto Sans Hebrew&amp;quot;, &amp;quot;Noto Sans Bengali&amp;quot;, sans-serif; font-size: 14px;&quot;&gt;data/hora RFC 3339&lt;/span&gt;&lt;/div&gt;&lt;div&gt;duração da atividade (regex &lt;b&gt;[title]&lt;/b&gt;)&lt;/div&gt;&lt;div&gt;Matéria: regex &lt;b&gt;[title]&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;align=left;" parent="1" vertex="1">
-                    <mxGeometry x="460" y="240" width="410" height="170" as="geometry"/>
-                </mxCell>
-                <mxCell id="44" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="42" target="26" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="42" value="Coletar tasks existentes" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="590" y="-180" width="120" height="60" as="geometry"/>
-                </mxCell>
-                <mxCell id="47" value="" style="shape=waypoint;sketch=0;size=6;pointerEvents=1;points=[];fillColor=none;resizable=0;rotatable=0;perimeter=centerPerimeter;snapToPoint=1;" parent="1" vertex="1">
-                    <mxGeometry x="1130" y="320" width="20" height="20" as="geometry"/>
-                </mxCell>
-                <mxCell id="50" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.8;entryY=1.1;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="37" target="47" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="55" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="53">
+                <mxCell id="55" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="53" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="330" y="-80" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="53" value="Bd to Google Tasks" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="53" value="Bd to Google Tasks" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="100" y="-130" width="120" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="57" value="Atualizar o banco de dados com o objeto novo" style="whiteSpace=wrap;html=1;align=left;" vertex="1" parent="1">
-                    <mxGeometry x="880" y="120" width="120" height="60" as="geometry"/>
-                </mxCell>
-                <mxCell id="60" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.6;entryY=1.1;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="57" target="47">
+                <mxCell id="69" value="" style="edgeStyle=none;html=1;" parent="1" source="61" target="68" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="69" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="61" target="68">
+                <mxCell id="72" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="61" target="71" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="72" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="61" target="71">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="61" value="&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;Bd to Google Tasks&lt;/span&gt;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="61" value="&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;Bd to Google Tasks&lt;/span&gt;" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="1540" y="-340" width="120" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="62" value="No evento de fechamento do app, mandar todas as atividades sem google_id" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="76" value="" style="edgeStyle=none;html=1;" parent="1" source="62" target="75" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="62" value="No evento de fechamento do app, cadastrar todas as atividades sem google_id" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="1530" y="-87" width="120" height="110" as="geometry"/>
                 </mxCell>
-                <mxCell id="66" value="Atentar-se que muitos objetos não possuem o google_id porque são antigos.&lt;div&gt;Mandar somente os objetos novos&lt;/div&gt;" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;" vertex="1" parent="1">
+                <mxCell id="66" value="Atentar-se que muitos objetos não possuem o google_id porque são antigos.&lt;div&gt;Mandar somente os objetos novos&lt;/div&gt;" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;" parent="1" vertex="1">
                     <mxGeometry x="1240" y="-240" width="280" height="100" as="geometry"/>
                 </mxCell>
-                <mxCell id="70" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="68" target="62">
+                <mxCell id="70" value="" style="edgeStyle=none;html=1;" parent="1" source="68" target="62" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="68" value="Adicionar Objetos" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="68" value="Adicionar Objetos na API" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="1530" y="-200" width="120" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="74" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="71" target="73">
+                <mxCell id="74" value="" style="edgeStyle=none;html=1;" parent="1" source="71" target="73" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="71" value="Update de objetos" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="71" value="Update de objetos" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="1730" y="-205" width="120" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="73" value="" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="73" value="" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="1730" y="-35" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="75" value="&lt;div&gt;TASK é um dicionário com as chaves:valores -&amp;gt;&lt;/div&gt;title: &quot;duracao_str materia nome&lt;div&gt;notes: Período: periodo&lt;/div&gt;&lt;div&gt;due: data.isoformat()T00:00:00Z&lt;/div&gt;&lt;div&gt;caso completo seja true:&amp;nbsp;&lt;span style=&quot;background-color: transparent;&quot;&gt;status: completed&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent;&quot;&gt;caso id não seja nulo: google_id&lt;/span&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;align=left;" parent="1" vertex="1">
+                    <mxGeometry x="1420" y="135" width="320" height="115" as="geometry"/>
+                </mxCell>
+                <mxCell id="95" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="91" target="94">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="91" value="Para cada task realizar:" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="590" y="-180" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="97" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="94" target="96">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="94" value="Coletar o objeto no banco de dados pelo google_id" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="590" y="-40" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="101" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="96" target="100">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="108" value="sim" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="101">
+                    <mxGeometry x="-0.1515" y="1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="120" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="96" target="119">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="96" value="O objeto é nulo?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="610" y="90" width="80" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="103" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="100" target="102">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="113" value="sim" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="103">
+                    <mxGeometry x="-0.0069" y="-3" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="110" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="100" target="109">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="860" y="240"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="112" value="não" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="110">
+                    <mxGeometry x="-0.0152" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="100" value="&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;a chave &quot;deleted&quot; é True?&lt;/span&gt;" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="772.5" y="50" width="177.5" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="105" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="102" target="104">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="102" value="nem insere no banco de dados" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="1058.75" y="100" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="104" value="" style="shape=waypoint;sketch=0;size=6;pointerEvents=1;points=[];fillColor=default;resizable=0;rotatable=0;perimeter=centerPerimeter;snapToPoint=1;" vertex="1" parent="1">
+                    <mxGeometry x="1308.75" y="120" width="20" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="115" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="109" target="114">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="109" value="insira o objeto no banco de dados" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="1058.75" y="210" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="114" value="" style="shape=waypoint;sketch=0;size=6;pointerEvents=1;points=[];fillColor=default;resizable=0;rotatable=0;perimeter=centerPerimeter;snapToPoint=1;" vertex="1" parent="1">
+                    <mxGeometry x="1308.75" y="230" width="20" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="122" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="119" target="121">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="123" value="sim" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="122">
+                    <mxGeometry x="-0.2686" y="-1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="119" value="&lt;span style=&quot;color: rgb(0, 0, 0); text-align: left;&quot;&gt;google_etag deste objeto é a mesma do banco de dados?&lt;/span&gt;" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="555" y="250" width="190" height="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="121" value="" style="shape=waypoint;sketch=0;size=6;pointerEvents=1;points=[];fillColor=default;resizable=0;rotatable=0;perimeter=centerPerimeter;snapToPoint=1;" vertex="1" parent="1">
+                    <mxGeometry x="910" y="350" width="20" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="137" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="132" target="136">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="141" value="sim" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontStyle=1" vertex="1" connectable="0" parent="137">
+                    <mxGeometry x="-0.488" y="-1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="140" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="132" target="134">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="142" value="não" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="140">
+                    <mxGeometry x="-0.3778" y="-4" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="132" value="objeto contém a chave deleted e é verdadeiro o valor de deleted?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="545" y="520" width="210" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="133" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="134" target="135">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="134" value="atualizar o objeto do banco de dados com o novo objeto.&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;atentar-se para não salvar na lista de modificações para serem enviadas no término do programa&lt;/div&gt;" style="whiteSpace=wrap;html=1;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="590" y="810" width="120" height="210" as="geometry"/>
+                </mxCell>
+                <mxCell id="146" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="135" target="145">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="135" value="&lt;h1&gt;&lt;b&gt;Inserir os dados:&lt;/b&gt;&lt;/h1&gt;&lt;div&gt;google_id&lt;b&gt;[id]&lt;/b&gt;: google_id&lt;/div&gt;&lt;div&gt;google_etag&lt;b&gt;[etag]&lt;/b&gt;: etag&lt;/div&gt;&lt;div&gt;&lt;b&gt;[title]&lt;/b&gt;: nome&lt;/div&gt;&lt;div&gt;google data de conclusão[&lt;b&gt;due&lt;/b&gt;] (se tiver) formato&amp;nbsp;&lt;span style=&quot;background-color: rgba(255, 255, 255, 0.95); color: rgb(32, 33, 36); font-family: Roboto, &amp;quot;Noto Sans&amp;quot;, &amp;quot;Noto Sans JP&amp;quot;, &amp;quot;Noto Sans KR&amp;quot;, &amp;quot;Noto Naskh Arabic&amp;quot;, &amp;quot;Noto Sans Thai&amp;quot;, &amp;quot;Noto Sans Hebrew&amp;quot;, &amp;quot;Noto Sans Bengali&amp;quot;, sans-serif; font-size: 14px;&quot;&gt;data/hora RFC 3339&lt;/span&gt;&lt;/div&gt;&lt;div&gt;duração da atividade (regex &lt;b&gt;[title]&lt;/b&gt;)&lt;/div&gt;&lt;div&gt;Matéria: regex &lt;b&gt;[title]&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="445" y="1060" width="410" height="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="139" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="136" target="138">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="136" value="Deleta do banco de dados pelo google_id" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="880" y="590" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="138" value="" style="shape=waypoint;sketch=0;size=6;pointerEvents=1;points=[];fillColor=default;resizable=0;rotatable=0;perimeter=centerPerimeter;snapToPoint=1;" vertex="1" parent="1">
+                    <mxGeometry x="1130" y="610" width="20" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="148" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="145" target="147">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="151" value="Sim" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="148">
+                    <mxGeometry x="-0.7273" relative="1" as="geometry">
+                        <mxPoint y="1" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="153" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="145" target="152">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="154" value="não" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="153">
+                    <mxGeometry x="-0.513" y="-2" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="145" value="Objeto tem a chave completed == True?" style="rhombus;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="560" y="1270" width="180" height="185" as="geometry"/>
+                </mxCell>
+                <mxCell id="156" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="147" target="155">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="147" value="Passar essa task para tasklist de concluídos" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="850" y="1332.5" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="152" value="" style="shape=waypoint;sketch=0;size=6;pointerEvents=1;points=[];fillColor=default;resizable=0;rotatable=0;perimeter=centerPerimeter;snapToPoint=1;" vertex="1" parent="1">
+                    <mxGeometry x="640" y="1617.5" width="20" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="155" value="" style="shape=waypoint;sketch=0;size=6;pointerEvents=1;points=[];fillColor=default;resizable=0;rotatable=0;perimeter=centerPerimeter;snapToPoint=1;" vertex="1" parent="1">
+                    <mxGeometry x="900" y="1492.5" width="20" height="20" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>

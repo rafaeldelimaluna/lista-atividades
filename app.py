@@ -9,10 +9,10 @@ from src.components import *
 from src.db import Db
 from src.components.editar_item import EditarItem
 from src.resources import Icons
-from logging import DEBUG, basicConfig,WARNING
+from logging import DEBUG,INFO, basicConfig,WARNING,info
 from src.google_module import MyGoogleEngine
 
-basicConfig(level=DEBUG,format="\033[;30m%(levelname)s\033[;32m:%(filename)s \033[m| %(funcName)s:%(lineno)d ->\033[;33m%(message)s\033[m")
+basicConfig(level=INFO,format="\033[;30m%(levelname)s\033[;32m:%(filename)s \033[m| %(funcName)s:%(lineno)d ->\033[;33m%(message)s\033[m")
 
 class Main(QMainWindow):
     def __init__(self):
@@ -24,8 +24,10 @@ class Main(QMainWindow):
 
 
         self.db = Db()
+        info("Loading MyGoogleEngine")
         self.google_engine = MyGoogleEngine(self.db)
         self.google_engine.sync_database()
+        info("MyGoogleEngine loaded")
 
         self.inputs = InputsLineEdit(self)
         self.lista_atividades = ListaAtividades(self,self.db)
@@ -68,16 +70,38 @@ class Main(QMainWindow):
 
         if event.key() == Qt.Key.Key_Delete and self.lista_atividades.widget.hasFocus():
             self.lista_atividades.delete_current_item()
+
     def push_atividades_white_google_id_to_google_tasks(self):
         atividade_items = self.db.get_all_white_google_id()
         for item in atividade_items:
             task = self.google_engine.add(item)
             item.google_id = task["id"]
             item.google_etag = task["etag"]
-            self.db.update(item)
+            self.db.update(item,False)
+
+    def sync_google_tasks(self):
+        """Nesta função, o banco de dados passa os dados para a API"""
+        self.push_atividades_white_google_id_to_google_tasks()
+        atividades_com_novas_etags:list[AtividadeItem] = []
+        print(self.db.objeto_das_atividades_modificadas)
+        for atividade_modificada in self.db.objeto_das_atividades_modificadas:
+            print("------------------------")
+            print("atividade velha:",atividade_modificada.__dict__)
+            atividade_modificada.google_etag = self.google_engine.update(atividade_modificada)["etag"]
+            print("atividade nova:",atividade_modificada.__dict__)
+            atividades_com_novas_etags.append(atividade_modificada)
+            
+        self.db.objeto_das_atividades_modificadas.clear()
+        self.db.update_many_etags(atividades_com_novas_etags)
+
+
+        for google_id_atividade_removida in self.db.google_id_das_atividades_removidas:
+            self.google_engine.remove(google_id_atividade_removida)
+
+        self.db.google_id_das_atividades_removidas.clear()
 
     def closeEvent(self,event):
-        self.push_atividades_white_google_id_to_google_tasks()
+        self.sync_google_tasks()
         self.google_engine.sync_database()
         self.db.update_last_entry()
 

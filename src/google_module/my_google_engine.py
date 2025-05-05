@@ -1,4 +1,5 @@
 from datetime import datetime
+import logging
 import os.path
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -11,7 +12,7 @@ from re import compile as cmp,DOTALL
 from src.db import Db
 from src.models import Periodo,Materias
 
-pattern_atividade_manual = cmp(r"(\d\d:\d\d) (\w+) ([^\n]+)")
+pattern_atividade_manual = cmp(r"(\d\d:\d\d(?::\d\d)) (\w+) ([^\n]+)")
 
 
 
@@ -41,13 +42,22 @@ class MyGoogleEngine:
         self.connection = connection
 
     def add(self,atividade_obj:AtividadeItem)->dict:
-        task = {
-            "title": f"{atividade_obj.duracao_str} {atividade_obj.materia} {atividade_obj.nome}",
-            "notes": f"Período:{atividade_obj.periodo}",
-            "due": f"{atividade_obj.data.isoformat()}T00:00:00Z"
-        }
+        task = atividade_obj.to_task()
         output = self.service.tasks().insert(tasklist=MyGoogleEngine.LISTA_DE_ATIVIDADES_TASKLIST_ID,body=task).execute()
         return output
+    
+    def update(self,atividade_obj:AtividadeItem)->dict:
+        # task = self.service.tasks().get(tasklist=MyGoogleEngine.LISTA_DE_ATIVIDADES_TASKLIST_ID).execute()
+        task = atividade_obj.to_task()
+        
+        output = self.service.tasks().update(tasklist=MyGoogleEngine.LISTA_DE_ATIVIDADES_TASKLIST_ID,task=atividade_obj.google_id,body=task).execute()
+        print(output)
+        return output
+    
+    def remove(self,googleId:str)->None:
+        print(f"{googleId=}")
+        output = self.service.tasks().delete(tasklist=MyGoogleEngine.LISTA_DE_ATIVIDADES_TASKLIST_ID,task=googleId).execute()
+        print(output)
 
     def __inserir_dados_de_title(self,obj:AtividadeItem,title:str)->None:
         """Ele insere os dados por referência, por isso não existe retorno"""
@@ -59,20 +69,7 @@ class MyGoogleEngine:
         else:
             obj.duracao = pattern_match[0][0]
             obj.materia = Materias.searchMateria(pattern_match[0][1])
-            obj.nome = obj.materia + " "+pattern_match[0][2]
-
-    def __get_periodo_with_task_note(self,task_note:str)->str | None:
-        """Se nenhum período for reconhecido na nota da task,\n
-        nada sera retornado(None)"""
-        if task_note.lower().__contains__(Periodo.Manha):
-            return Periodo.Manha
-        if task_note.lower().__contains__(Periodo.Tarde):
-            return Periodo.Tarde
-        if task_note.lower().__contains__(Periodo.Noite):
-            return Periodo.Noite
-        if task_note.lower().__contains__(Periodo.Todos):
-            return Periodo.Todos
-        return None
+            obj.nome = pattern_match[0][2]
 
     def __make_atividade_by_task(self,task:dict) ->AtividadeItem:
         atividade_obj = AtividadeItem()
@@ -80,7 +77,7 @@ class MyGoogleEngine:
         atividade_obj.google_etag = task["etag"]
         atividade_obj.completo = True if task["status"] == "completed" else False
         if task.__contains__("notes"):
-            periodo_task_note = self.__get_periodo_with_task_note(task["notes"])
+            periodo_task_note = Periodo.search_periodo(task["notes"])
             atividade_obj.periodo = periodo_task_note if isinstance(periodo_task_note,str) else Periodo.Todos
         else:
             atividade_obj.periodo = Periodo.Todos
@@ -103,19 +100,30 @@ class MyGoogleEngine:
     
     def __pass_task_to_tasklist_completeds(self,taskId):
         self.service.tasks().move(tasklist=MyGoogleEngine.LISTA_DE_ATIVIDADES_TASKLIST_ID,task=taskId,destinationTasklist=MyGoogleEngine.TASKLIST_CONLUIDAS_ID).execute()
-
+        
+    def __task_is_deleted(self,task:dict)->bool:
+        return task.__contains__("deleted") and task["deleted"]
+    
     def sync_database(self):
         """Faz a ação de adicionar e dar update das tasks para o banco de dados"""
-        all_tasks:dict[dict] = self.service.tasks().list(tasklist=MyGoogleEngine.LISTA_DE_ATIVIDADES_TASKLIST_ID,showHidden=True).execute()["items"]
+        all_tasks:dict[dict] = self.service.tasks().list(tasklist=MyGoogleEngine.LISTA_DE_ATIVIDADES_TASKLIST_ID,showHidden=True,showDeleted=True).execute()["items"]
         for task in all_tasks:
             db_obj = self.connection.get_by_google_id(task["id"])
 
-            if self.__atividade_is_modified(db_obj,task):
-                self.__update_atividade_modificada(task,db_obj)
-
             if db_obj == None:
+                if self.__task_is_deleted(task):
+                    continue
                 atividade_obj = self.__make_atividade_by_task(task)
                 self.connection.add(atividade_obj)
+                continue
+
+            pp(self.__make_atividade_by_task(task).__dict__)
+
+            if self.__atividade_is_modified(db_obj,task):
+                if self.__task_is_deleted(task):
+                    self.connection.deleteByGoogleId(task["id"])
+                else:
+                    self.__update_atividade_modificada(task,db_obj)
             
             if task["status"] == "completed":
                 self.__pass_task_to_tasklist_completeds(task["id"])

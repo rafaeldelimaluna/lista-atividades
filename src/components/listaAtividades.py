@@ -72,7 +72,7 @@ class ListaAtividades(QListWidget):
             atividade_item.completo = False
         else:
             atividade_item.completo = True
-        self.db.update(atividade_item)
+        self.db.update(atividade_item,True)
         self.update_list()
 
     def update_list(self):

@@ -3,6 +3,7 @@ from src.db import Db
 from src.models import Periodo,AtividadeItem
 from src.models.tipos_atividade import TiposAtividade
 from src.google_module import MyGoogleEngine
+from pprint import pp
 
 context = Db()
 
@@ -40,6 +41,17 @@ class AtividadesPeriodo:
 
 # atividades = AtividadesPeriodo()
 db = Db()
-obj = db.get_all()[-1]
-data = obj.data
-# MyGoogleEngine().sync_database()
+# obj = db.get_all()[-1]
+# data = obj.data
+google_engine = MyGoogleEngine(db)
+# google_engine.sync_database()
+
+pp(google_engine.service.tasks().list(tasklist=google_engine.LISTA_DE_ATIVIDADES_TASKLIST_ID).execute())
+# historia_br = db.get_all()[-1]
+# historia_br.nome = "História Escravidão do Brasil artigo 16 páginas"
+
+# google_engine.update(historia_br)
+
+# 01:00:00 Hist Artigo Escravidão no Brasil 16 páginas
+
+google_engine.sync_database()

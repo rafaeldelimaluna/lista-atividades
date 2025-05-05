@@ -8,11 +8,18 @@ from typing import overload
 class Db:
     connection:Connection = None
     __query_to_insert = "INSERT INTO ATIVIDADES (Nome,Duracao,Completo,Data,Periodo,Materia,GOOGLE_ID,GOOGLE_ETAG) VALUES (?,?,?,?,?,?,?,?)"
+    __ALL_FIELDS = "NOME,DURACAO,COMPLETO,DATA,PERIODO,MATERIA,GOOGLE_ID,GOOGLE_ETAG"
+
     def __init__(self):
         if isinstance(Db.connection,Connection):
             self.connection = Db.connection.cursor()
             return
         self.connection = connect("database.db")
+        self.google_engine = None
+
+        self.objeto_das_atividades_modificadas:list[AtividadeItem] = []
+        self.google_id_das_atividades_removidas:list[str] = [] #Armazena somente o google_id da atividade
+
         self.__create_table_atividades()
 
 
@@ -32,7 +39,7 @@ class Db:
 
 
     def get(self,id:int) -> AtividadeItem|None:
-        result = self.connection.execute("SELECT ROWID,* FROM ATIVIDADES WHERE ROWID = ?",[id]).fetchone()
+        result = self.connection.execute(f"SELECT ROWID,{Db.__ALL_FIELDS} FROM ATIVIDADES WHERE ROWID = ?",[id]).fetchone()
         if result == None:
             return
         item = AtividadeItem()
@@ -45,7 +52,7 @@ class Db:
         ## OBS:
         Somente serão retornados objetos depois do rowid 420, pois a implementação do google tasks é no dia 5 e este valor corresponde com o dia
          """
-        query = f"SELECT ROWID,* FROM ATIVIDADES WHERE GOOGLE_ID IS NULL AND ROWID>420"
+        query = f"SELECT ROWID,{Db.__ALL_FIELDS} FROM ATIVIDADES WHERE GOOGLE_ID IS NULL AND ROWID>420"
         result = self.connection.execute(query).fetchall()
         items:list[AtividadeItem] = list()
         for item in result:
@@ -57,7 +64,7 @@ class Db:
         
 
     def get_by_google_id(self,googleId:str) ->AtividadeItem|None:
-        result = self.connection.execute("SELECT ROWID,* FROM ATIVIDADES WHERE GOOGLE_ID = ?",[googleId]).fetchone()
+        result = self.connection.execute(f"SELECT ROWID,{Db.__ALL_FIELDS} FROM ATIVIDADES WHERE GOOGLE_ID = ?",[googleId]).fetchone()
         if result == None:
             return
         item = AtividadeItem()
@@ -69,7 +76,7 @@ class Db:
         if periodo == Periodo.Todos:
             query = "SELECT ROWID,* FROM ATIVIDADES"
         else:
-            query = f"SELECT ROWID,* FROM ATIVIDADES WHERE PERIODO='{periodo}'"
+            query = f"SELECT ROWID,{Db.__ALL_FIELDS} FROM ATIVIDADES WHERE PERIODO='{periodo}'"
         result = self.connection.execute(query).fetchall()
         items:list[AtividadeItem] = list()
         if data == None:
@@ -94,28 +101,52 @@ class Db:
             for item in atividade_item:
                 values.append([item.nome,item.duracao_str,item.completo,item.data_str,item.periodo,item.materia,item.google_id,item.google_etag])
                 self.__google_engine.add(item)
-            print(values)
             self.connection.executemany(Db.__query_to_insert,values)
         self.connection.commit()
 
 
-    def update(self,atividade_item:AtividadeItem):
+    def update(self,atividade_item:AtividadeItem,save_to_update_in_google_tasks= False):
         """No método update, é verificado a mateŕia desta atividade, tendo em vista que é custosa essa verificação"""
+        """save_to_update_in_google_tasks: Caso seja verdadeiro, ele salva o objeto atualizado \n
+        para no fechamento do app mandar para a API google"""
         if atividade_item.id == 0 or atividade_item.id == None or atividade_item is None:
             logging.warning(f"ATIVIDADE ITEM COM VALORES ANORMAIS PARA UPDATE: {atividade_item.id=}")
             return
         self.connection.execute("UPDATE ATIVIDADES SET NOME=?,DURACAO=?,COMPLETO=?,Data=?,Periodo=?,MATERIA=?,GOOGLE_ID=?,GOOGLE_ETAG=? WHERE ROWID=?",[atividade_item.nome,atividade_item.duracao_str,atividade_item.completo,atividade_item.data_str,atividade_item.periodo,atividade_item.materia,atividade_item.google_id,atividade_item.google_etag,atividade_item.id])
         self.connection.commit()
+        if atividade_item.google_id != None and save_to_update_in_google_tasks:
+            self.objeto_das_atividades_modificadas.append(atividade_item)
 
-        
+    def update_etag(self,atividade_id:int,atividade_etag:str) -> None:
+        """É importante ressaltar que esta função não salva na lista as atividades modificadas"""
+        query = "UPDATE ATIVIDADES SET GOOGLE_ETAG = ? WHERE ROWID=?"
+        self.connection.execute(query,[atividade_etag,atividade_id])
+        self.connection.commit()
+
+    def update_many_etags(self,atividades:list[AtividadeItem]):
+        query = "UPDATE ATIVIDADES SET GOOGLE_ETAG = ? WHERE ROWID=?"
+        values = map(lambda atividade_item: [atividade_item.google_etag,atividade_item.id],atividades)
+        self.connection.executemany(query,values)
+        self.connection.commit()
+
+
     def deleteByItem(self,atividade_item:AtividadeItem):
         self.deleteById(atividade_item.id) 
 
 
     def deleteById(self,atividade_id:int):
+        atividade_obj = self.get(atividade_id)
         self.connection.execute("DELETE FROM ATIVIDADES WHERE ROWID=?",[atividade_id])
         self.connection.commit()
-    
+        
+        if isinstance(atividade_obj,AtividadeItem) and atividade_obj.google_id != None:
+            self.google_id_das_atividades_removidas.append(atividade_obj.google_id)
+
+    def deleteByGoogleId(self,googleId:str):
+        """Ela não salva para mandar para a API"""
+        self.connection.execute("DELETE FROM ATIVIDADES WHERE GOOGLE_ID=?",[googleId])
+        self.connection.commit()
+
     def update_last_entry(self):
         """Salva a ultima vez em que o programa. Salva esse dado no banco de dados"""
         white_obj = AtividadeItem()

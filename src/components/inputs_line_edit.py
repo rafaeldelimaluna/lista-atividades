@@ -27,7 +27,7 @@ class InputsLineEdit(QObject):
         if tuple_values.__len__() == 3:
             item.duracao = tuple_values[0]
             item.materia = tuple_values[1]
-            item.nome = tuple_values[2]
+            item.nome = item.materia + " " +tuple_values[2]
             return item
         return
     

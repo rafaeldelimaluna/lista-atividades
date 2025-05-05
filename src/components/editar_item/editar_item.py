@@ -55,7 +55,7 @@ class EditarItem(QMainWindow):
     def edit(self):
         """Sem erro: True \n Com erro: False"""
         if isinstance(self.cadastro,AtividadeItem):
-            self.db.update(self.cadastro)
+            self.db.update(self.cadastro,True)
             self.close()
             return
         self.statusBar.showMessage("Há algum erro nas entradas dos formulários")

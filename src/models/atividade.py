@@ -156,6 +156,18 @@ class AtividadeItem:
     def google_etag(self,value):
         self.__google_etag = value
 
+    def to_task(self)->dict:
+        task = {
+        "title": f"{self.duracao_str} {self.nome}",
+        "notes": f"Período:{self.periodo}",
+        "due": f"{self.data.isoformat()}T00:00:00Z"
+        }
+        if self.completo:
+            task["status"] = "completed"
+        if self.google_id != None:
+            task["id"] = self.google_id
+        return task
+
 
 
         
